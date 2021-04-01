@@ -12,7 +12,10 @@ from bs4 import BeautifulSoup
 import csv
 from datetime import datetime
 import time
+# Variables Rendimiento
+from rendimiento_jugadores import RendimientoScraper
 
+vec_nroalineado, vec_valoracionpromedio, vec_totalgoles, vec_pasesgol, vec_autogol, vec_minutosjugados, vec_porteriaimbatida = [],[],[],[],[],[],[],
 
 # In[2]:
 
@@ -61,7 +64,13 @@ for link in soup.find_all('div',class_='pager'):
         #print(url_page)
         contEquipos = 0
         for link_equipo in soup_pagina.find_all('td', class_= 'no-border-links hauptlink'):
+            # if contEquipos != 8:
+            #     contEquipos = contEquipos + 1
+            #     continue
             for equipo in link_equipo.find_all('a',class_='vereinprofil_tooltip'):
+                if contEquipos != 18:
+                    contEquipos = contEquipos + 1
+                    continue
                 url_equipo="https://www.transfermarkt.es"+equipo.attrs["href"]
                 response_equipo = requests.get(url=url_equipo,
                             headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'})
@@ -126,3 +135,61 @@ for link in soup.find_all('div',class_='pager'):
                         #                 posicion.append(x.text.strip())
                         #                 print("posicion " + str(posicion[len(posicion) - 1]))
                         # Integra con Página de rendimiento
+                        linkRendimiento = soup_jugador.find("div", {"class": ["leistungsdatenHeadline flexCenter"]})
+                        if linkRendimiento:
+                            urlRendimiento = linkRendimiento.select("a")[0]['href']
+                            # Instancia Clase para extración de rendimiento con selenium
+                            try:
+                                objRendimientoScraper = RendimientoScraper(urlRendimiento, posicion[len(posicion)-1])
+                                nroalineado, valoracionpromedio, totalgoles, pasesgol, autogol, \
+                                minutosjugados, porteriaimbatida = objRendimientoScraper.navegando()
+                                vec_nroalineado.append(nroalineado)
+                                vec_valoracionpromedio.append(valoracionpromedio)
+                                vec_totalgoles.append(totalgoles)
+                                vec_pasesgol.append(pasesgol)
+                                vec_autogol.append(autogol)
+                                vec_porteriaimbatida.append(porteriaimbatida)
+                                vec_minutosjugados.append(minutosjugados)
+                            except Exception as e:
+                                print(e)
+                                vec_nroalineado.append("0")
+                                vec_valoracionpromedio.append("0")
+                                vec_totalgoles.append("0")
+                                vec_pasesgol.append("0")
+                                vec_autogol.append("0")
+                                vec_porteriaimbatida.append("0")
+                                vec_minutosjugados.append("0")
+                        else:
+                            vec_nroalineado.append("0")
+                            vec_valoracionpromedio.append("0")
+                            vec_totalgoles.append("0")
+                            vec_pasesgol.append("0")
+                            vec_autogol.append("0")
+                            vec_porteriaimbatida.append("0")
+                            vec_minutosjugados.append("0")
+
+                        data_frame_navigate = pd.DataFrame(
+                            {
+                                'NombreEquipo': nombre_equipo,
+                                'NombreJugador': nombre,
+                                'PrecioJugador': precio_jugador,
+                                'FechaNacimiento': fecha_nacimiento,
+                                'Edad': Edad,
+                                'Nacionalidad': Nacionalidad,
+                                'Altura': Altura,
+                                'Posicion': posicion,
+                                'PartidosJugados': vec_nroalineado,
+                                'ValoracionPromedio': vec_valoracionpromedio,
+                                'TotalGoles': vec_totalgoles,
+                                'TotalPasesGol': vec_pasesgol,
+                                'TotalGolesRecibidos': vec_autogol,
+                                'PorteriaImbatida': vec_porteriaimbatida,
+                                'MinutosJugados': vec_minutosjugados,
+
+                            }, columns=['NombreEquipo', 'NombreJugador', 'PrecioJugador', 'FechaNacimiento', 'Edad', 'Nacionalidad', 'Altura', 'Posicion', 'PartidosJugados', 'ValoracionPromedio', 'TotalGoles', 'TotalPasesGol', 'TotalGolesRecibidos', 'PorteriaImbatida', 'MinutosJugados']
+                        )
+                        data_frame_navigate.to_csv('./dataset/estadisticas-futbolistas.csv', index=False, encoding='utf-8')
+        print("contEquipos " + str(contEquipos))
+        if contEquipos > 0:
+            break
+        contEquipos = contEquipos + 1
