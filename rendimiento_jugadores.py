@@ -108,33 +108,49 @@ class RendimientoScraper:
                 for j, columna in enumerate(columnas):
                     if j == ColumnasTablaRendimiento.PARTIDOS_JUGADOS.value:
                         self.nroalineado = columna.text.strip().replace("\n", "").replace("-", "")
+                        if self.nroalineado == "":
+                            self.nroalineado = "0"
                     elif j == ColumnasTablaRendimiento.PUNTAJE_PROMEDIO.value:
                         self.valoracionpromedio = columna.text.strip().replace("\n", "").replace("-", "")
+                        if self.valoracionpromedio == "":
+                            self.valoracionpromedio = "0"
                     elif j == ColumnasTablaRendimiento.GOLES.value:
                         varTotGoles = columna.text.strip().replace("\n", "").replace("-", "")
                         if varTotGoles == "":
                             self.totalgoles = "0"
                         else:
                             self.totalgoles = columna.text.strip().replace("\n", "").replace("-", "")
+                            if self.totalgoles == "":
+                                self.totalgoles = "0"
                     elif j == ColumnasTablaRendimiento.PASES_GOL.value:
                         if posicion != Posiciones.PORTERO.value:
                             self.pasesgol = columna.text.strip().replace("\n", "").replace("-", "")
+                            if self.pasesgol == "":
+                                self.pasesgol = "0"
                         else:
                             self.pasesgol = "0"
                     elif j == ColumnasTablaRendimiento.GOLES_EN_CONTRA.value:
                         if posicion == Posiciones.PORTERO.value:
                             self.autogol = columna.text.strip().replace("\n", "").replace("-", "")
+                            if self.autogol == "":
+                                self.autogol = "0"
                         else:
-                            self.vec_autogol = "0"
+                            self.autogol = "0"
                     elif j == ColumnasTablaRendimiento.PARTIDOS_IMBATIDO_PORTERO_Y_TIEMPO_JUGADOR.value:
                         if posicion == Posiciones.PORTERO.value:
                             self.porteriaimbatida = columna.text.strip().replace("\n", "").replace("-", "")
+                            if self.porteriaimbatida == "":
+                                self.porteriaimbatida = "0"
                         else:
                             self.minutosjugados = columna.text.strip().replace("\n", "").replace("-", "")
+                            if self.minutosjugados == "":
+                                self.minutosjugados = "0"
                             self.porteriaimbatida = "0"
                     elif j == ColumnasTablaRendimiento.TIEMPO_PORTERO.value:
                         if posicion == Posiciones.PORTERO.value:
                             self.minutosjugados = columna.text.strip().replace("\n", "").replace("-", "")
+                            if self.minutosjugados == "":
+                                self.minutosjugados = "0"
                         else:
                             self.minutosjugados = "0"
 
