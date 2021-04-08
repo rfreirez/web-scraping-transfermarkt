@@ -2,7 +2,7 @@
 
 # In[1]:
 
-
+import datetime
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
@@ -11,9 +11,11 @@ from bs4 import BeautifulSoup
 #import whois
 import csv
 from datetime import datetime
+#from datetime import date
 import time
+import re
 # Variables Rendimiento
-from rendimiento_jugadores import RendimientoScraper
+# from rendimiento_jugadores import RendimientoScraper
 
 vec_nroalineado, vec_valoracionpromedio, vec_totalgoles, vec_pasesgol, vec_autogol, vec_minutosjugados, vec_porteriaimbatida = [],[],[],[],[],[],[],
 
@@ -89,7 +91,15 @@ for link in soup.find_all('div',class_='pager'):
                         time.sleep(1)
                         getTagPrecioJugador = soup_jugador.find('div',class_="right-td")
                         if getTagPrecioJugador:
-                            precio_jugador.append(getTagPrecioJugador.text.strip().replace("\n", ""))
+                            #print("Precio Manolo 1",getTagPrecioJugador.text.strip())
+                            l_precio=re.split(" ",getTagPrecioJugador.text.strip().replace("\n", ""))
+                            if l_precio[1]=="mill.":
+                                precio=float(l_precio[0].replace(",","."))
+                            elif l_precio[1]=="mil":
+                                precio=round(float(l_precio[0].replace(",","."))/1000,2)
+                            precio_jugador.append(precio)
+                            #precio_jugador.append(getTagPrecioJugador.text.strip().replace("\n", ""))
+                            #print("Precio Manolo " + str(precio_jugador[len(precio_jugador) - 1]))
                         else:
                             precio_jugador.append("0")
                         for nombrej in soup_jugador.find_all("h1"):
@@ -98,15 +108,19 @@ for link in soup.find_all('div',class_='pager'):
                             nombre_jugador=nombrej.text
                             #print(nombre_jugador)
                             nombre.append(nombre_jugador)
-                            print("Nombre Jugador " + str(nombre[len(nombre) - 1]))
-                            print("Precio " + str(precio_jugador[len(precio_jugador) - 1]))
+                            #print("Nombre Jugador " + str(nombre[len(nombre) - 1]))
+                            
                         for fec in soup_jugador.find_all("span",itemprop="birthDate"):
                             fecha_nac=fec.text.split()
                             edad=fecha_nac[1].replace('(', '')
                             edad=edad.replace(')', '')
-                            #print(fecha_nac[0],edad)
-                            fecha_nacimiento.append(fecha_nac[0])
-                            print("Fecha Nacimiento " + str(fecha_nacimiento[len(fecha_nacimiento) - 1]))
+                            fecha=fecha_nac[0]
+                            #print("Fecha Nacimiento ",fecha,"tipo",type(fecha))
+                            fecha=datetime.strptime(fecha, "%d/%m/%Y")
+                            #print("Fecha Nacimiento ",fecha,"tipo",type(fecha))
+                            fecha_nacimiento.append(fecha)
+                            #fecha_nacimiento.append(fecha_nac[0])
+                            #print("Fecha Nacimiento " + str(fecha_nacimiento[len(fecha_nacimiento) - 1]))
                             Edad.append(edad)
                             print("Edad " + str(Edad[len(Edad) - 1]))
                         for natio in soup_jugador.find_all("span",itemprop="nationality"):
@@ -116,7 +130,10 @@ for link in soup.find_all('div',class_='pager'):
                         tagAltura = soup_jugador.find_all("span",itemprop="height")
                         if len(tagAltura) > 0:
                             for alt in tagAltura:
-                                Altura.append(alt.text)
+                                altura=alt.text.replace(" m","")
+                                altura=float(altura.replace(",","."))
+                                Altura.append(altura)
+                                #Altura.append(alt.text.replace(" m",""))
                                 print("Altura " + str(Altura[len(Altura) - 1]))
                         else:
                             Altura.append("")
@@ -151,7 +168,7 @@ for link in soup.find_all('div',class_='pager'):
                                 vec_porteriaimbatida.append(porteriaimbatida)
                                 vec_minutosjugados.append(minutosjugados)
                             except Exception as e:
-                                print(e)
+                                #print(e)
                                 vec_nroalineado.append("0")
                                 vec_valoracionpromedio.append("0")
                                 vec_totalgoles.append("0")
@@ -188,7 +205,7 @@ for link in soup.find_all('div',class_='pager'):
 
                             }, columns=['NombreEquipo', 'NombreJugador', 'PrecioJugador', 'FechaNacimiento', 'Edad', 'Nacionalidad', 'Altura', 'Posicion', 'PartidosJugados', 'ValoracionPromedio', 'TotalGoles', 'TotalPasesGol', 'TotalGolesRecibidos', 'PorteriaImbatida', 'MinutosJugados']
                         )
-                        data_frame_navigate.to_csv('./dataset/estadisticas-futbolistas.csv', index=False, encoding='utf-8')
+                        data_frame_navigate.to_csv('C:/Users/mggui/MAESTRIA UOC/Web Scraping/estadisticas-futbolistas.csv', index=False, encoding="UTF-8")
         print("contEquipos " + str(contEquipos))
         if contEquipos > 0:
             break
