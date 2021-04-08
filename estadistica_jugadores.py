@@ -70,9 +70,9 @@ for link in soup.find_all('div',class_='pager'):
             #     contEquipos = contEquipos + 1
             #     continue
             for equipo in link_equipo.find_all('a',class_='vereinprofil_tooltip'):
-                if contEquipos != 18:
-                    contEquipos = contEquipos + 1
-                    continue
+                # if contEquipos != 18:
+                #     contEquipos = contEquipos + 1
+                #     continue
                 url_equipo="https://www.transfermarkt.es"+equipo.attrs["href"]
                 response_equipo = requests.get(url=url_equipo,
                             headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'})
@@ -205,7 +205,7 @@ for link in soup.find_all('div',class_='pager'):
 
                             }, columns=['NombreEquipo', 'NombreJugador', 'PrecioJugador', 'FechaNacimiento', 'Edad', 'Nacionalidad', 'Altura', 'Posicion', 'PartidosJugados', 'ValoracionPromedio', 'TotalGoles', 'TotalPasesGol', 'TotalGolesRecibidos', 'PorteriaImbatida', 'MinutosJugados']
                         )
-                        data_frame_navigate.to_csv('driver/estadisticas-futbolistas.csv', index=False, encoding="UTF-8")
+                        data_frame_navigate.to_csv('dataset/estadisticas-futbolistas.csv', index=False, encoding="UTF-8")
         print("contEquipos " + str(contEquipos))
         if contEquipos > 0:
             break
