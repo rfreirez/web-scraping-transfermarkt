@@ -15,7 +15,7 @@ from datetime import datetime
 import time
 import re
 # Variables Rendimiento
-# from rendimiento_jugadores import RendimientoScraper
+from rendimiento_jugadores import RendimientoScraper
 
 vec_nroalineado, vec_valoracionpromedio, vec_totalgoles, vec_pasesgol, vec_autogol, vec_minutosjugados, vec_porteriaimbatida = [],[],[],[],[],[],[],
 
@@ -205,7 +205,7 @@ for link in soup.find_all('div',class_='pager'):
 
                             }, columns=['NombreEquipo', 'NombreJugador', 'PrecioJugador', 'FechaNacimiento', 'Edad', 'Nacionalidad', 'Altura', 'Posicion', 'PartidosJugados', 'ValoracionPromedio', 'TotalGoles', 'TotalPasesGol', 'TotalGolesRecibidos', 'PorteriaImbatida', 'MinutosJugados']
                         )
-                        data_frame_navigate.to_csv('C:/Users/mggui/MAESTRIA UOC/Web Scraping/estadisticas-futbolistas.csv', index=False, encoding="UTF-8")
+                        data_frame_navigate.to_csv('driver/estadisticas-futbolistas.csv', index=False, encoding="UTF-8")
         print("contEquipos " + str(contEquipos))
         if contEquipos > 0:
             break
