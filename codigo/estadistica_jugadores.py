@@ -205,7 +205,7 @@ for link in soup.find_all('div',class_='pager'):
 
                             }, columns=['NombreEquipo', 'NombreJugador', 'PrecioJugador', 'FechaNacimiento', 'Edad', 'Nacionalidad', 'Altura', 'Posicion', 'PartidosJugados', 'ValoracionPromedio', 'TotalGoles', 'TotalPasesGol', 'TotalGolesRecibidos', 'PorteriaImbatida', 'MinutosJugados']
                         )
-                        data_frame_navigate.to_csv('dataset/estadisticas-futbolistas.csv', index=False, encoding="UTF-8")
+                        data_frame_navigate.to_csv('../dataset/estadisticas-futbolistas.csv', index=False, encoding="UTF-8")
         print("contEquipos " + str(contEquipos))
         if contEquipos > 0:
             break
