@@ -9,6 +9,9 @@ Este proyecto se implementó como parte de la tarea Práctica 1: Web scraping co
     * pip install beautifulsoup4
     * pip install selenium
 
+## Ejecución
+    * python estadistica_jugadores.py
+
 ## Autores
 * Manuel García Guillén
 * Renán Freire Zurita
